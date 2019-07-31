@@ -4,7 +4,6 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var _regeneratorRuntime = _interopDefault(require('@babel/runtime-corejs2/regenerator'));
 var _objectSpread = _interopDefault(require('@babel/runtime-corejs2/helpers/objectSpread'));
-var _objectWithoutProperties = _interopDefault(require('@babel/runtime-corejs2/helpers/objectWithoutProperties'));
 var _asyncToGenerator = _interopDefault(require('@babel/runtime-corejs2/helpers/asyncToGenerator'));
 var URL = _interopDefault(require('url'));
 var cheerio = _interopDefault(require('cheerio'));
@@ -271,6 +270,7 @@ function _fetchResource() {
   /*#__PURE__*/
   _regeneratorRuntime.mark(function _callee(url, parsedUrl) {
     var headers,
+        fetchOptions,
         options,
         _ref2,
         response,
@@ -282,6 +282,7 @@ function _fetchResource() {
         switch (_context.prev = _context.next) {
           case 0:
             headers = _args.length > 2 && _args[2] !== undefined ? _args[2] : {};
+            fetchOptions = _args.length > 3 && _args[3] !== undefined ? _args[3] : {};
             parsedUrl = parsedUrl || URL.parse(encodeURI(url));
             options = _objectSpread({
               url: parsedUrl.href,
@@ -299,35 +300,35 @@ function _fetchResource() {
             }, typeof window !== 'undefined' ? {} : {
               // Follow GET redirects; this option is for Node only
               followRedirect: true
-            });
-            _context.next = 5;
+            }, fetchOptions);
+            _context.next = 6;
             return get(options);
 
-          case 5:
+          case 6:
             _ref2 = _context.sent;
             response = _ref2.response;
             body = _ref2.body;
-            _context.prev = 8;
+            _context.prev = 9;
             validateResponse(response);
             return _context.abrupt("return", {
               body: body,
               response: response
             });
 
-          case 13:
-            _context.prev = 13;
-            _context.t0 = _context["catch"](8);
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context["catch"](9);
             return _context.abrupt("return", {
               error: true,
               message: _context.t0.message
             });
 
-          case 16:
+          case 17:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, this, [[8, 13]]);
+    }, _callee, this, [[9, 14]]);
   }));
   return _fetchResource.apply(this, arguments);
 }
@@ -1578,11 +1579,13 @@ var Resource = {
   //                  attempting to fetch it ourselves. Expects a
   //                  string.
   // :param headers: Custom headers to be included in the request
+  // :param fetchOptions: Fetch options
   create: function () {
     var _create = _asyncToGenerator(
     /*#__PURE__*/
     _regeneratorRuntime.mark(function _callee(url, preparedResponse, parsedUrl) {
       var headers,
+          fetchOptions,
           result,
           validResponse,
           _args = arguments;
@@ -1591,9 +1594,10 @@ var Resource = {
           switch (_context.prev = _context.next) {
             case 0:
               headers = _args.length > 3 && _args[3] !== undefined ? _args[3] : {};
+              fetchOptions = _args.length > 4 && _args[4] !== undefined ? _args[4] : {};
 
               if (!preparedResponse) {
-                _context.next = 6;
+                _context.next = 7;
                 break;
               }
 
@@ -1609,29 +1613,29 @@ var Resource = {
                 body: preparedResponse,
                 response: validResponse
               };
-              _context.next = 9;
+              _context.next = 10;
               break;
 
-            case 6:
-              _context.next = 8;
-              return fetchResource(url, parsedUrl, headers);
-
-            case 8:
-              result = _context.sent;
+            case 7:
+              _context.next = 9;
+              return fetchResource(url, parsedUrl, headers, fetchOptions);
 
             case 9:
+              result = _context.sent;
+
+            case 10:
               if (!result.error) {
-                _context.next = 12;
+                _context.next = 13;
                 break;
               }
 
               result.failed = true;
               return _context.abrupt("return", result);
 
-            case 12:
+            case 13:
               return _context.abrupt("return", this.generateDoc(result));
 
-            case 13:
+            case 14:
             case "end":
               return _context.stop();
           }
@@ -7519,16 +7523,17 @@ var Mercury = {
     _regeneratorRuntime.mark(function _callee(url) {
       var _ref,
           html,
-          opts,
-          _opts$fetchAllPages,
+          _ref$fetchAllPages,
           fetchAllPages,
-          _opts$fallback,
+          _ref$fallback,
           fallback,
-          _opts$contentType,
+          _ref$contentType,
           contentType,
-          _opts$headers,
+          _ref$headers,
           headers,
           extend,
+          _ref$fetchOptions,
+          fetchOptions,
           parsedUrl,
           $,
           Extractor,
@@ -7545,11 +7550,11 @@ var Mercury = {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _ref = _args.length > 1 && _args[1] !== undefined ? _args[1] : {}, html = _ref.html, opts = _objectWithoutProperties(_ref, ["html"]);
-              _opts$fetchAllPages = opts.fetchAllPages, fetchAllPages = _opts$fetchAllPages === void 0 ? true : _opts$fetchAllPages, _opts$fallback = opts.fallback, fallback = _opts$fallback === void 0 ? true : _opts$fallback, _opts$contentType = opts.contentType, contentType = _opts$contentType === void 0 ? 'html' : _opts$contentType, _opts$headers = opts.headers, headers = _opts$headers === void 0 ? {} : _opts$headers, extend = opts.extend; // if no url was passed and this is the browser version,
+              _ref = _args.length > 1 && _args[1] !== undefined ? _args[1] : {}, html = _ref.html, _ref$fetchAllPages = _ref.fetchAllPages, fetchAllPages = _ref$fetchAllPages === void 0 ? true : _ref$fetchAllPages, _ref$fallback = _ref.fallback, fallback = _ref$fallback === void 0 ? true : _ref$fallback, _ref$contentType = _ref.contentType, contentType = _ref$contentType === void 0 ? 'html' : _ref$contentType, _ref$headers = _ref.headers, headers = _ref$headers === void 0 ? {} : _ref$headers, extend = _ref.extend, _ref$fetchOptions = _ref.fetchOptions, fetchOptions = _ref$fetchOptions === void 0 ? {} : _ref$fetchOptions;
+
+              // if no url was passed and this is the browser version,
               // set url to window.location.href and load the html
               // from the current page
-
               if (!url && cheerio.browser) {
                 url = window.location.href; // eslint-disable-line no-undef
 
@@ -7559,7 +7564,7 @@ var Mercury = {
               parsedUrl = URL.parse(url);
 
               if (validateUrl(parsedUrl)) {
-                _context.next = 6;
+                _context.next = 5;
                 break;
               }
 
@@ -7568,21 +7573,21 @@ var Mercury = {
                 message: 'The url parameter passed does not look like a valid URL. Please check your URL and try again.'
               });
 
-            case 6:
-              _context.next = 8;
-              return Resource.create(url, html, parsedUrl, headers);
+            case 5:
+              _context.next = 7;
+              return Resource.create(url, html, parsedUrl, headers, fetchOptions);
 
-            case 8:
+            case 7:
               $ = _context.sent;
 
               if (!$.failed) {
-                _context.next = 11;
+                _context.next = 10;
                 break;
               }
 
               return _context.abrupt("return", $);
 
-            case 11:
+            case 10:
               Extractor = getExtractor(url, parsedUrl, $); // console.log(`Using extractor for ${Extractor.domain}`);
               // if html still has not been set (i.e., url passed to Mercury.parse),
               // set html from the response of Resource.create
@@ -7618,11 +7623,11 @@ var Mercury = {
               _result = result, title = _result.title, next_page_url = _result.next_page_url; // Fetch more pages if next_page_url found
 
               if (!(fetchAllPages && next_page_url)) {
-                _context.next = 24;
+                _context.next = 23;
                 break;
               }
 
-              _context.next = 21;
+              _context.next = 20;
               return collectAllPages({
                 Extractor: Extractor,
                 next_page_url: next_page_url,
@@ -7634,18 +7639,18 @@ var Mercury = {
                 url: url
               });
 
-            case 21:
+            case 20:
               result = _context.sent;
-              _context.next = 25;
+              _context.next = 24;
               break;
 
-            case 24:
+            case 23:
               result = _objectSpread({}, result, {
                 total_pages: 1,
                 rendered_pages: 1
               });
 
-            case 25:
+            case 24:
               if (contentType === 'markdown') {
                 turndownService = new TurndownService();
                 result.content = turndownService.turndown(result.content);
@@ -7655,7 +7660,7 @@ var Mercury = {
 
               return _context.abrupt("return", _objectSpread({}, result, extendedTypes));
 
-            case 27:
+            case 26:
             case "end":
               return _context.stop();
           }
